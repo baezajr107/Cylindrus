@@ -24,4 +24,14 @@
         android:id="@+id/startButton"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="55dp"
+        android:text=" Cylindrus "
+        android:id="@+id/titleText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="41dp" />
 </RelativeLayout>
