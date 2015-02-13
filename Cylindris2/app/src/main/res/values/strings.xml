@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Cylindris</string>
+    <string name="title_activity_main_menu">MainMenu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Settings">New Button</string>
+    <string name="title_activity_settings_menu">SettingsMenu</string>
+    <string name="Start">Play</string>
+    <string name="Scores">High Scores</string>
+    <string name="title_activity_difficulty_menu">DifficultyMenu</string>
+    <string name="Hard">Hardcore</string>
+    <string name="Easy">Casual</string>
+
+</resources>
