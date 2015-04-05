@@ -1,61 +1,33 @@
 package example.project.cylindris;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 
-public class DifficultyMenu extends ActionBarActivity {
+public class testTetris extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_difficulty_menu);
-
-    Button easyButton = (Button) findViewById(R.id.easyButton);
-    Button hardButton = (Button) findViewById(R.id.hardButton);
-
-
-        easyButton.setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        startActivity(new Intent(getApplicationContext(), ScoreMenu.class));
-
-                    }
-
-                }
-
-
-        );
-
-        hardButton.setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        startActivity(new Intent(getApplicationContext(), ScoreMenu.class));
-
-                    }
-
-                }
-
-
-        );
-
-
-}
+        setContentView(R.layout.activity_test_tetris);
 
 
 
 
+        
+
+
+
+
+    }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_difficulty_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_test_tetris, menu);
         return true;
     }
 

@@ -12,5 +12,7 @@
     <string name="title_activity_difficulty_menu">DifficultyMenu</string>
     <string name="Hard">Hardcore</string>
     <string name="Easy">Casual</string>
+    <string name="title_activity_test_tetris">testTetris</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

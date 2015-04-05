@@ -9,8 +9,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainMenu"
-            android:screenOrientation="landscape"
-            android:label="@string/title_activity_main_menu" >
+            android:label="@string/title_activity_main_menu"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,21 +19,29 @@
         </activity>
         <activity
             android:name=".ScoreMenu"
-            android:screenOrientation="landscape"
             android:label="@string/title_activity_settings_menu"
-            android:parentActivityName=".MainMenu" >
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="example.project.cylindris.MainMenu" />
         </activity>
         <activity
             android:name=".DifficultyMenu"
-            android:screenOrientation="landscape"
             android:label="@string/title_activity_difficulty_menu"
-            android:parentActivityName=".MainMenu" >
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="example.project.cylindris.MainMenu" />
+        </activity>
+        <activity
+            android:name=".testTetris"
+            android:label="@string/title_activity_test_tetris"
+            android:parentActivityName=".DifficultyMenu" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="example.project.cylindris.DifficultyMenu" />
         </activity>
     </application>
 
