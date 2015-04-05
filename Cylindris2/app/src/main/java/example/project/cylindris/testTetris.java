@@ -6,14 +6,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class testTetris extends ActionBarActivity {
+public class testTetris extends ActionBarActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_tetris);
 
-
+            if (savedInstanceState == null)
+                getFragmentManager().beginTransaction().add(android.R.id.content, new tetrisFragment())
+                .commit();
 
 
         
