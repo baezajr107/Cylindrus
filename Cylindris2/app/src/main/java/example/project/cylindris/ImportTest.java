@@ -1,4 +1,4 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;

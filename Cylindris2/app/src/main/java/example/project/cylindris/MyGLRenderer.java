@@ -1,4 +1,4 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;

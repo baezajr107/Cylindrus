@@ -1,4 +1,4 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.content.Context;
 import android.content.res.AssetManager;

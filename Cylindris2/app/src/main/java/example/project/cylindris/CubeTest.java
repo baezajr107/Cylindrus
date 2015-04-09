@@ -1,4 +1,4 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.cylindrus.ImportTestRenderer;
+import example.project.cylindris.ImportTestRenderer;
 public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
 
@@ -21,7 +21,7 @@ public class CubeTest extends Activity {
 }
 class CubeTestSurfaceView extends GLSurfaceView
 {
-    private final CubeTestRenderer mRenderer;
+    private final CubeTestRenderer  mRenderer;
     private float mPreviousX;
     private float mPreviousY;
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
