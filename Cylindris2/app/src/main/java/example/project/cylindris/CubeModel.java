@@ -32,6 +32,10 @@ public class CubeModel
     private short face_vn[];
     private int num_verts;
     static final int COORDS_PER_VERTEX = 3;
+    float color[] = { 0.729411f, 0.854901f, 0.33333f, 1.0f };
+    public int angleOffset;
+    boolean taken=false;
+
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
             // the coordinates of the objects that use this vertex shader
@@ -50,9 +54,12 @@ public class CubeModel
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
-    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
-    public CubeModel(Context context, String object) throws Exception
+
+    public CubeModel(Context context, String object,int offsetAngle,float[] colors,boolean istaken) throws Exception
     {
+        taken = istaken;
+        color = colors;
+        angleOffset = offsetAngle;
         Scanner inOBJ;
         AssetManager mgr = context.getAssets();
         int num_pos=0, num_uv=0, num_norms=0, num_faces=0;
