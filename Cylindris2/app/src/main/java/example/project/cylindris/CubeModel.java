@@ -32,7 +32,7 @@ public class CubeModel
     private short face_vn[];
     private int num_verts;
     static final int COORDS_PER_VERTEX = 3;
-    float color[] = { 0.729411f, 0.854901f, 0.33333f, 1.0f };
+    public float color[] = {0,0,0,0};
     public int angleOffset;
     boolean taken=false;
 
@@ -55,10 +55,9 @@ public class CubeModel
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public CubeModel(Context context, String object,int offsetAngle,float[] colors,boolean istaken) throws Exception
+    public CubeModel(Context context, String object,int offsetAngle,boolean istaken) throws Exception
     {
         taken = istaken;
-        color = colors;
         angleOffset = offsetAngle;
         Scanner inOBJ;
         AssetManager mgr = context.getAssets();
@@ -174,6 +173,7 @@ public class CubeModel
     }
     public void draw(float[] mvpMatrix)
     {
+        GLES20.glCullFace(GLES20.GL_BACK );
         GLES20.glUseProgram(mProgram);
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         GLES20.glEnableVertexAttribArray(mPositionHandle);

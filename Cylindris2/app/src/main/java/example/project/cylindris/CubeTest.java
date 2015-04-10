@@ -47,39 +47,38 @@ class CubeTestSurfaceView extends GLSurfaceView
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 
-        float x = e.getX();
-        float y = e.getY();
-DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
-        int height = metrics.heightPixels;
-        int width = metrics.widthPixels;
+
         switch (e.getAction()) {
             case MotionEvent.ACTION_UP:
 
-//                float dx = x - mPreviousX;
-//                float dy = y - mPreviousY;
+                float x = e.getX();
+                float y = e.getY();
+                DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
+                int height = metrics.heightPixels;
+                int width = metrics.widthPixels;
 
-                // reverse direction of rotation above the mid-line
-//                if (y > getHeight() / 2) {
-//                    dx = dx * -1 ;
-//                }
+                //left or right
+                if(y<=height*.8 && y>=height*.2) {
+                    float rotateAngle = -24f;
+                    if (x > width / 2)
+                        rotateAngle = -1*rotateAngle;
 
-                // reverse direction of rotation to left of the mid-line
-//                if (x < getWidth() / 2) {
-//                    dy = dy * -1 ;
-//                }
-                int rotateAngle = -36;
-                if(x>width/2)
-                    rotateAngle-=(2*rotateAngle);
+                    mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                }
+                //down
+                else if(y>height*.8){
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                                rotateAngle);
+                }
+                //rotate
+                else if(y<height*.2){
+
+
+
+                }
                 requestRender();
             break;
         }
 
-        mPreviousX = x;
-        mPreviousY = y;
         return true;
     }
 }
