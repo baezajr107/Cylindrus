@@ -59,25 +59,29 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
         //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
 
         // Calculate the projection and view transformation
-        //Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        Matrix.translateM(mMVPMatrix,0,mMVPMatrix,0,0f,0f,0f);
-        Matrix.setRotateM(mMVPMatrix, 0, mAngle, 0, -1f, 0);
-        Matrix.setLookAtM(mMVPMatrix, 0, 0, 6f, -12, 0f, 0f, 0f, 0f, 1.0f, 0f);
-        Matrix.perspectiveM(mMVPMatrix, 0, 60f, 3.0f/5.0f, 3f, 100f);
-//        Matrix.setLookAtM(mViewMatrix, 0, 0, 6f, -12, 0f, 0f, 0f, 0f, 1.0f, 0f);
+        Matrix.setIdentityM(mRotationMatrix,0);
+        Matrix.translateM(mRotationMatrix,0,0f,0f,-3f);
+        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, -1f, 0);
+        Matrix.translateM(mRotationMatrix,0,0f,0f,3f);
+        Matrix.scaleM(mRotationMatrix, 0, 0.5f, 0.5f, 0.5f);
+
+
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 6f, -12, 0f, 0f, 0f, 0f, 1.0f, 0f);
 //        //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
-//        Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f/5.0f, 3f, 100f);
+        Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f/5.0f, 0.1f, 100f);
 //        // Calculate the projection and view transformation
-//        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-//        Matrix.translateM(mMVPMatrix,0,mMVPMatrix,0,0f,0f,10f);
-//        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, -1f, 0);
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the mMVPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
-        //Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.multiplyMM(scratch,0,mMVPMatrix,0,mRotationMatrix,0);
+
+//        Matrix.setRotateM(mMVPMatrix, 0, mAngle, 0, -1f, 0);
+//        Matrix.scaleM(mMVPMatrix, 0, 0.1f, 0.1f, 1.0f);
+//        // Combine the rotation matrix with the projection and camera view
+//        // Note that the mMVPMatrix factor *must be first* in order
+//        // for the matrix multiplication product to be correct.
+//        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         // Draw shape
         GLES20.glDisable(GLES20.GL_CULL_FACE);
-        test.draw(mMVPMatrix);
+        test.draw(scratch);
     }
     public float getAngle() {
         return mAngle;

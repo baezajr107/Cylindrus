@@ -24,7 +24,7 @@ class GameEngineView extends GLSurfaceView
     private final CubeTestRenderer  mRenderer;
     private float mPreviousX;
     private float mPreviousY;
-    private final float TOUCH_SCALE_FACTOR = 10;
+    private final float TOUCH_SCALE_FACTOR = 0;
     public GameEngineView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
@@ -51,21 +51,19 @@ class GameEngineView extends GLSurfaceView
             case MotionEvent.ACTION_MOVE:
 
                 float dx = x - mPreviousX;
-//                float dy = y - mPreviousY;
+              //  float dy = y - mPreviousY;
 
-                // reverse direction of rotation above the mid-line
+                //reverse direction of rotation above the mid-line
 //                if (y > getHeight() / 2) {
 //                    dx = dx * -1 ;
 //                }
 
-                // reverse direction of rotation to left of the mid-line
+                //reverse direction of rotation to left of the mid-line
 //                if (x < getWidth() / 2) {
 //                    dy = dy * -1 ;
 //                }
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                                ((dx) * TOUCH_SCALE_FACTOR));
+                mRenderer.setAngle(0);
                 requestRender();
         }
 

@@ -2,8 +2,11 @@ package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 
 import example.project.cylindris.ImportTestRenderer;
@@ -24,7 +27,7 @@ class CubeTestSurfaceView extends GLSurfaceView
     private final CubeTestRenderer  mRenderer;
     private float mPreviousX;
     private float mPreviousY;
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private final float TOUCH_SCALE_FACTOR = 60.0f / 320;
     public CubeTestSurfaceView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
@@ -46,27 +49,33 @@ class CubeTestSurfaceView extends GLSurfaceView
 
         float x = e.getX();
         float y = e.getY();
-
+DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
+        int height = metrics.heightPixels;
+        int width = metrics.widthPixels;
         switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+//                float dx = x - mPreviousX;
+//                float dy = y - mPreviousY;
 
                 // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
-                }
+//                if (y > getHeight() / 2) {
+//                    dx = dx * -1 ;
+//                }
 
                 // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
-                }
+//                if (x < getWidth() / 2) {
+//                    dy = dy * -1 ;
+//                }
+                int rotateAngle = -36;
+                if(x>width/2)
+                    rotateAngle-=(2*rotateAngle);
 
                 mRenderer.setAngle(
                         mRenderer.getAngle() +
-                                ((dx + dy) * TOUCH_SCALE_FACTOR));
+                                rotateAngle);
                 requestRender();
+            break;
         }
 
         mPreviousX = x;
