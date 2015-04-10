@@ -13,10 +13,9 @@
         android:id="@+id/easyButton"
         android:width="256dp"
         android:height="144dp"
-        android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/hardButton"
+        android:layout_marginTop="111dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -25,9 +24,7 @@
         android:text="@string/Hard"
         android:width="256dp"
         android:height="144dp"
-        android:layout_marginRight="16dp"
         android:id="@+id/hardButton"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/easyButton"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -10,11 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Scores"
-        android:layout_marginBottom="55dp"
         android:width="320dp"
         android:id="@+id/settingsButton"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/startButton"
+        android:layout_alignLeft="@+id/startButton"
+        android:layout_marginTop="43dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         android:text="@string/Start"
         android:width="320dp"
         android:id="@+id/startButton"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/titleText"
         android:layout_centerHorizontal="true" />
 
     <TextView

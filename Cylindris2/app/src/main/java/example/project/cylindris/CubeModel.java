@@ -1,4 +1,4 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -32,6 +32,10 @@ public class CubeModel
     private short face_vn[];
     private int num_verts;
     static final int COORDS_PER_VERTEX = 3;
+    public float color[] = {0,0,0,0};
+    public int angleOffset;
+    boolean taken=false;
+
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
             // the coordinates of the objects that use this vertex shader
@@ -50,9 +54,11 @@ public class CubeModel
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
-    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
-    public CubeModel(Context context, String object) throws Exception
+
+    public CubeModel(Context context, String object,int offsetAngle,boolean istaken) throws Exception
     {
+        taken = istaken;
+        angleOffset = offsetAngle;
         Scanner inOBJ;
         AssetManager mgr = context.getAssets();
         int num_pos=0, num_uv=0, num_norms=0, num_faces=0;
@@ -167,6 +173,7 @@ public class CubeModel
     }
     public void draw(float[] mvpMatrix)
     {
+        GLES20.glCullFace(GLES20.GL_BACK );
         GLES20.glUseProgram(mProgram);
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         GLES20.glEnableVertexAttribArray(mPositionHandle);

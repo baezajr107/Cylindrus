@@ -1,12 +1,15 @@
-package com.cylindrus;
+package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 
-import com.cylindrus.ImportTestRenderer;
+import example.project.cylindris.ImportTestRenderer;
 public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
 
@@ -21,10 +24,10 @@ public class CubeTest extends Activity {
 }
 class CubeTestSurfaceView extends GLSurfaceView
 {
-    private final CubeTestRenderer mRenderer;
+    private final CubeTestRenderer  mRenderer;
     private float mPreviousX;
     private float mPreviousY;
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private final float TOUCH_SCALE_FACTOR = 60.0f / 320;
     public CubeTestSurfaceView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
@@ -44,33 +47,38 @@ class CubeTestSurfaceView extends GLSurfaceView
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 
-        float x = e.getX();
-        float y = e.getY();
 
         switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+                float x = e.getX();
+                float y = e.getY();
+                DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
+                int height = metrics.heightPixels;
+                int width = metrics.widthPixels;
 
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
+                //left or right
+                if(y<=height*.8 && y>=height*.2) {
+                    float rotateAngle = -24f;
+                    if (x > width / 2)
+                        rotateAngle = -1*rotateAngle;
+
+                    mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
                 }
+                //down
+                else if(y>height*.8){
 
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
                 }
+                //rotate
+                else if(y<height*.2){
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                                ((dx + dy) * TOUCH_SCALE_FACTOR));
+
+
+                }
                 requestRender();
+            break;
         }
 
-        mPreviousX = x;
-        mPreviousY = y;
         return true;
     }
 }

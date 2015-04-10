@@ -6,30 +6,31 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-public class ImportTest extends Activity {
+import example.project.cylindris.ImportTestRenderer;
+public class GameEngine extends Activity {
     private GLSurfaceView mGLView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create an OpenGL ES view
-        mGLView = new ImportTestSurfaceView(this);
+        mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
     }
 }
-class ImportTestSurfaceView extends GLSurfaceView
+class GameEngineView extends GLSurfaceView
 {
-    private final ImportTestRenderer mRenderer;
+    private final CubeTestRenderer  mRenderer;
     private float mPreviousX;
     private float mPreviousY;
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-    public ImportTestSurfaceView(Context context) {
+    private final float TOUCH_SCALE_FACTOR = 0;
+    public GameEngineView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        mRenderer = new ImportTestRenderer();
+        mRenderer = new CubeTestRenderer();
         mRenderer.context = context;
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(mRenderer);
@@ -44,32 +45,30 @@ class ImportTestSurfaceView extends GLSurfaceView
         // interested in events where the touch position changed.
 
         float x = e.getX();
-        float y = e.getY();
+//        float y = e.getY();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
 
                 float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+              //  float dy = y - mPreviousY;
 
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
-                }
+                //reverse direction of rotation above the mid-line
+//                if (y > getHeight() / 2) {
+//                    dx = dx * -1 ;
+//                }
 
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
-                }
+                //reverse direction of rotation to left of the mid-line
+//                if (x < getWidth() / 2) {
+//                    dy = dy * -1 ;
+//                }
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                                ((dx + dy) * TOUCH_SCALE_FACTOR));
+                mRenderer.setAngle(0);
                 requestRender();
         }
 
         mPreviousX = x;
-        mPreviousY = y;
+//        mPreviousY = y;
         return true;
     }
 }
