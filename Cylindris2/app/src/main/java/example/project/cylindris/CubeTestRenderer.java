@@ -43,7 +43,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     }
     public void onSurfaceChanged(GL10 unused, int width, int height)
     {
-        GLES20.glViewport(0, 0, width, height);
+        GLES20.glViewport(0, 100, width, height);
         float ratio = (float) width / height;
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
@@ -55,19 +55,29 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -12, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+
         //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
-        Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f/5.0f, 0.1f, 100f);
+
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, -1f, 0);
+        //Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.translateM(mMVPMatrix,0,mMVPMatrix,0,0f,0f,0f);
+        Matrix.setRotateM(mMVPMatrix, 0, mAngle, 0, -1f, 0);
+        Matrix.setLookAtM(mMVPMatrix, 0, 0, 6f, -12, 0f, 0f, 0f, 0f, 1.0f, 0f);
+        Matrix.perspectiveM(mMVPMatrix, 0, 60f, 3.0f/5.0f, 3f, 100f);
+//        Matrix.setLookAtM(mViewMatrix, 0, 0, 6f, -12, 0f, 0f, 0f, 0f, 1.0f, 0f);
+//        //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
+//        Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f/5.0f, 3f, 100f);
+//        // Calculate the projection and view transformation
+//        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+//        Matrix.translateM(mMVPMatrix,0,mMVPMatrix,0,0f,0f,10f);
+//        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, -1f, 0);
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        //Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         // Draw shape
         GLES20.glDisable(GLES20.GL_CULL_FACE);
-        test.draw(scratch);
+        test.draw(mMVPMatrix);
     }
     public float getAngle() {
         return mAngle;

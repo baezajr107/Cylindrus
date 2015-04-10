@@ -12,5 +12,6 @@
     <string name="title_activity_difficulty_menu">DifficultyMenu</string>
     <string name="Hard">Hardcore</string>
     <string name="Easy">Casual</string>
+    <string name="title_activity_game_engine">GameEngine</string>
 
 </resources>
