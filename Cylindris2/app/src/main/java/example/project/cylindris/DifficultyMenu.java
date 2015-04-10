@@ -23,7 +23,7 @@ public class DifficultyMenu extends ActionBarActivity {
         easyButton.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        startActivity(new Intent(getApplicationContext(), ScoreMenu.class));
+                        startActivity(new Intent(getApplicationContext(), testTetris.class));
 
                     }
 
@@ -35,7 +35,7 @@ public class DifficultyMenu extends ActionBarActivity {
         hardButton.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        startActivity(new Intent(getApplicationContext(), ScoreMenu.class));
+                        startActivity(new Intent(getApplicationContext(), testTetris.class));
 
                     }
 
