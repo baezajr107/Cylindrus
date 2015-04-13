@@ -3,6 +3,7 @@ package example.project.cylindris;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -14,7 +15,7 @@ import java.util.Random;
 import example.project.cylindris.ImportTestRenderer;
 public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
-
+    MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +23,7 @@ public class CubeTest extends Activity {
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
-
+        player.start();
     }
 }
 class CubeTestSurfaceView extends GLSurfaceView

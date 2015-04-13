@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="example.project.cylindris" >
-
+<uses-feature android:glEsVersion="0x00020000" android:required="true" />
     <application
 
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainMenu"
-            android:label="@string/title_activity_main_menu"
+            android:label="Cylindris"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
         </activity>
         <activity
             android:name=".DifficultyMenu"
-            android:label="@string/title_activity_difficulty_menu"
+            android:label="Cylindris"
             android:parentActivityName=".MainMenu"
             android:screenOrientation="portrait" >
             <meta-data
@@ -56,6 +56,7 @@
         <activity
             android:name=".CubeTest"
             android:label="cube test" >
+
         </activity>
         <activity
             android:name=".GameEngine"
