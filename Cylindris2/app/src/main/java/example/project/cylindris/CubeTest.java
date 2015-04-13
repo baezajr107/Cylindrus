@@ -9,6 +9,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 
+import java.util.Random;
+
 import example.project.cylindris.ImportTestRenderer;
 public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
@@ -20,14 +22,16 @@ public class CubeTest extends Activity {
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
+
     }
 }
 class CubeTestSurfaceView extends GLSurfaceView
 {
     private final CubeTestRenderer  mRenderer;
-    private float mPreviousX;
-    private float mPreviousY;
-    private final float TOUCH_SCALE_FACTOR = 60.0f / 320;
+    public int currentFront;
+    public long timer;
+    Shape currentShape = new Shape();
+
     public CubeTestSurfaceView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
@@ -40,6 +44,9 @@ class CubeTestSurfaceView extends GLSurfaceView
         // Render the view only when there is a change in the drawing data
         // Turn off for continuous render when no user events ex. touch
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        currentFront = 8;
+        timer = 1;
+        run();
     }
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -59,26 +66,173 @@ class CubeTestSurfaceView extends GLSurfaceView
 
                 //left or right
                 if(y<=height*.8 && y>=height*.2) {
-                    float rotateAngle = -24f;
-                    if (x > width / 2)
-                        rotateAngle = -1*rotateAngle;
+                    float rotateAngle = -22.5f;
+                    if (x > width / 2) {
+                        rotateAngle = -1 * rotateAngle;
+                        if(currentShape.shiftRight(mRenderer.occupationMatrix)) {
+                            currentFront = ((currentFront - 1) % 16) < 0 ? (16 + (currentFront - 1) % 16) : (currentFront - 1) % 16;
+                            mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                            updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
+                        }
 
-                    mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                    }
+                    else{
+                        if(currentShape.shiftLeft(mRenderer.occupationMatrix)) {
+                            currentFront = ((currentFront + 1) % 16) < 0 ? (16 + (currentFront + 1) % 16) : (currentFront + 1) % 16;
+                            mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                            updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
+                        }
+                    }
+
                 }
                 //down
                 else if(y>height*.8){
+                    if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
+                        clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive);
+                        Random shapeRandomizer = new Random();
+                        Shape.type newtype = Shape.type.T;
+                        int choice = shapeRandomizer.nextInt(7);
+                        switch(choice){
+                            case 0: newtype = Shape.type.L; break;
+                            case 1: newtype = Shape.type.J; break;
+                            case 2: newtype = Shape.type.Z; break;
+                            case 3: newtype = Shape.type.S; break;
+                            case 4: newtype = Shape.type.O; break;
+                            case 5: newtype = Shape.type.T; break;
+                            case 6: newtype = Shape.type.I; break;
+                        }
 
+                        if(!currentShape.initialize(mRenderer.occupationMatrix,currentFront,newtype)){
+                            //game over action
+                        }
+                    }
+                    updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
                 }
                 //rotate
                 else if(y<height*.2){
 
-
-
+                    if(currentShape.rotate(mRenderer.occupationMatrix)){
+                        updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
+                    }
                 }
+
                 requestRender();
             break;
         }
 
         return true;
+    }
+
+    public void updateColors(CubeModel[][] cubes, int[] xcoords, int[] ycoords, Shape.type type){
+        for(int i=0;i<4;i++){
+            switch(type){
+                case L:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = 1f;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case J:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = 1f;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case Z:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 1f;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case S:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = .3f;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = .6f;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case O:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = .8f;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = .4f;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case T:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = 0;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = .4f;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 1f;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+                case I:
+                    cubes[ycoords[i]][xcoords[i]].color[0] = 1;
+                    cubes[ycoords[i]][xcoords[i]].color[1] = 1;
+                    cubes[ycoords[i]][xcoords[i]].color[2] = 1;
+                    cubes[ycoords[i]][xcoords[i]].color[3] = 0;
+                    break;
+
+            }
+        }
+
+
+    }
+
+
+    public boolean clearComplete(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes){
+
+        for(int i=14;i>=0;i--){
+            int takenBlocks = 0;
+            for(int j=0;j<16;j++){
+                if(occupationMatrix[i][j]){
+                    takenBlocks++;
+                }
+            }
+            if(takenBlocks==16){
+                mRenderer.completedRows++;
+                if(mRenderer.completedRows>95){
+                    return true;//congratulations, you have absolutely no life
+                }
+                shiftActiveToPassive(occupationMatrix,activeCubes,passiveCubes,i);
+            }
+        }
+        return false;
+
+
+    }
+
+    public void shiftActiveToPassive(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes,int layer){
+        //allocate a line and shift the passive tower down
+        mRenderer.allocateLine(passiveCubes.length-1-mRenderer.completedRows);
+        int look = passiveCubes.length-1-mRenderer.completedRows;
+        for(int i=passiveCubes.length-1-mRenderer.completedRows;i<passiveCubes.length-1;i++){
+            for(int j=0;j<16;j++){
+                passiveCubes[i][j]= passiveCubes[i+1][j];
+            }
+        }
+        //copy the completed line from active to passive
+        for(int i=0;i<16;i++){
+            passiveCubes[passiveCubes.length-1][i] = activeCubes[layer][i];
+        }
+        //shift active down
+        for(int i=layer;i<activeCubes.length-1;i++){
+           for(int j=0;j<16;j++) {
+               occupationMatrix[i][j] = occupationMatrix[i+1][j];
+               activeCubes[i][j] = activeCubes[i+1][j];
+           }
+        }
+        //clear top row
+        try{
+//            int offsetAngle = 0;
+            Random value = new Random();
+            for(int i=0;i<16;i++){
+                occupationMatrix[activeCubes.length-1][i]=false;
+//                activeCubes[activeCubes.length-1][i] = new CubeModel(mRenderer.context, "testcube", activeCubes[activeCubes.length-2][i].angleOffset, false);
+                activeCubes[activeCubes.length-1][i].color[0] = value.nextFloat();
+                activeCubes[activeCubes.length-1][i].color[1] = value.nextFloat();
+                activeCubes[activeCubes.length-1][i].color[2] = value.nextFloat();
+                activeCubes[activeCubes.length-1][i].color[3] = 0;
+//                offsetAngle+=22.5;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
