@@ -33,7 +33,7 @@ public class CubeModel
     private int num_verts;
     static final int COORDS_PER_VERTEX = 3;
     public float color[] = {0,0,0,0};
-    public int angleOffset;
+    public float angleOffset;
     boolean taken=false;
 
     private final String vertexShaderCode =
@@ -55,14 +55,14 @@ public class CubeModel
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public CubeModel(Context context, String object,int offsetAngle,boolean istaken) throws Exception
+    public CubeModel(Context context, String object,float offsetAngle,boolean istaken) throws Exception
     {
         taken = istaken;
         angleOffset = offsetAngle;
         Scanner inOBJ;
         AssetManager mgr = context.getAssets();
         int num_pos=0, num_uv=0, num_norms=0, num_faces=0;
-        System.out.println("Begin loading");
+//        System.out.println("Begin loading");
         inOBJ = new Scanner(new BufferedReader(new InputStreamReader(mgr.open(object + ".obj"))));
         while(inOBJ.hasNext())
         {
@@ -81,17 +81,17 @@ public class CubeModel
         num_verts = num_faces * 3;
         inOBJ.close();
         pos = new float[num_pos*3];
-        System.out.println("pos: " + num_pos*3);
+//        System.out.println("pos: " + num_pos*3);
         uv = new float[num_uv*2];
-        System.out.println("uv: " + num_uv*2);
+//        System.out.println("uv: " + num_uv*2);
         norms = new float[num_norms*3];
-        System.out.println("norms: " + num_norms*3);
+//        System.out.println("norms: " + num_norms*3);
         face_v = new short[num_faces*3];
-        System.out.println("face_v: " + num_faces*3);
+//        System.out.println("face_v: " + num_faces*3);
         face_vt = new short[num_faces*3];
-        System.out.println("face_vt: " + num_faces*3);
+//        System.out.println("face_vt: " + num_faces*3);
         face_vn = new short[num_faces*3];
-        System.out.println("face_vn: " + num_faces*3);
+//        System.out.println("face_vn: " + num_faces*3);
         Scanner OBJ;
         OBJ = new Scanner(new BufferedReader(new InputStreamReader(mgr.open(object + ".obj"))));
         int p=0,u=0,n=0,f=0;
@@ -128,7 +128,7 @@ public class CubeModel
             {
                 for(int i=1;i<4;i++)
                 {
-                    face_v[f] = (short)(Character.getNumericValue(line[i].charAt(0))-1);
+                    face_v[f] = (short)(Integer.parseInt(line[i].substring(0, line[i].indexOf("/")))-1);
                     face_vt[f] = (short)(Character.getNumericValue(line[i].charAt(2))-1);
                     face_vn[f] = (short)(Character.getNumericValue(line[i].charAt(4))-1);
                     f++;
@@ -136,12 +136,12 @@ public class CubeModel
             }
         }
         OBJ.close();
-        System.out.println(pos.toString());
-        System.out.println(uv.toString());
-        System.out.println(norms.toString());
-        System.out.println(face_v.toString());
-        System.out.println(face_vt.toString());
-        System.out.println(face_vn.toString());
+//        System.out.println(pos.toString());
+//        System.out.println(uv.toString());
+//        System.out.println(norms.toString());
+//        System.out.println(face_v.toString());
+//        System.out.println(face_vt.toString());
+//        System.out.println(face_vn.toString());
         //Store model coords
         ByteBuffer bb = ByteBuffer.allocateDirect(pos.length*4);
         bb.order(ByteOrder.nativeOrder());
@@ -173,7 +173,6 @@ public class CubeModel
     }
     public void draw(float[] mvpMatrix)
     {
-        GLES20.glCullFace(GLES20.GL_BACK );
         GLES20.glUseProgram(mProgram);
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         GLES20.glEnableVertexAttribArray(mPositionHandle);

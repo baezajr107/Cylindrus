@@ -5,6 +5,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -12,12 +15,15 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
 {
     //GLModel WILL be used in final version, imports and represents .obj files
     public Context context;
-    public CubeModel[][] test = new CubeModel[15][16];
+    public CubeModel[][] active = new CubeModel[15][16];
+    public CubeModel[][] passive = new CubeModel[100][16];
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private float[] mRotationMatrix = new float[16];
     public volatile float mAngle;
+    public boolean[][] occupationMatrix = new boolean[15][16];
+    public int completedRows = 0;
     public static int loadShader(int type, String shaderCode)
     {
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
@@ -34,24 +40,36 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     {
         // Set the background frame color
        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glEnable( GLES20.GL_DEPTH_TEST );
+        GLES20.glDepthFunc( GLES20.GL_LEQUAL );
+        GLES20.glDepthMask( true );
         // initialize a cube
         try {
 
-
-
-
             for(int i=0;i<15;i++) {
-                int offsetAngle = 180;
-                float[] colors = {0.1f,0.1f,0.1f,1f};
+                float offsetAngle = 0;
+                Random value = new Random();
                 for(int j=0;j<16;j++) {
-                    test[i][j] = new CubeModel(context, "testcube", offsetAngle, false);
-                    test[i][j].color[0] = .2f;
-                    test[i][j].color[1] = .2f;
-                    test[i][j].color[2] = .2f;
-                    test[i][j].color[3] = .5f;
-                    offsetAngle +=24.5;
+                    active[i][j] = new CubeModel(context, "testcube", offsetAngle, false);
+//                    active[i][j].color[0] = value.nextFloat();
+//                    active[i][j].color[1] = value.nextFloat();
+//                    active[i][j].color[2] = value.nextFloat();
+                    active[i][j].color[3] = 0;
+                    offsetAngle +=22.5;
                 }
             }
+
+                float offsetAngle = 0;
+                for(int j=0;j<16;j++) {
+                    passive[passive.length-1][j] = new CubeModel(context, "testcube", offsetAngle, false);
+                    offsetAngle +=22.5;
+                }
+
+            float[] white = {1f,1f,1f,1f};
+            for(int i=0;i<16;i++){
+                passive[99][i].color = white;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,48 +84,64 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     }
     public void onDrawFrame(GL10 unused)
     {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT|GLES20.GL_DEPTH_BUFFER_BIT);
+
         float heightoffset = 0;
-        for(int i=0;i<test.length;i++) {
-            for (int j = 0;j<test[i].length;j++) {
-                if (!test[i][j].taken)
+        for(int i=0;i<15;i++) {
+            for (int j=0; j<16;j++){
+                if (!occupationMatrix[i][j])
                     continue;
                 float[] scratch = new float[16];
 
-                // Redraw background color
-
-                // Set the camera position (View matrix)
-
-                //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
-
-                // Calculate the projection and view transformation
                 Matrix.setIdentityM(mRotationMatrix, 0);
-                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, -2.8f);
-                Matrix.setRotateM(mRotationMatrix, 0, mAngle + test[i][j].angleOffset, 0, -1f, 0);
-                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, 2.8f);
+                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, -2.18f);
+                Matrix.setRotateM(mRotationMatrix, 0, mAngle + active[i][j].angleOffset, 0, -1f, 0);
+                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, 2.18f);
                 Matrix.scaleM(mRotationMatrix, 0, 0.5f, 0.5f, 0.5f);
                 Matrix.translateM(mRotationMatrix, 0, 0f, -14f+heightoffset, 0f);
-
-
-                Matrix.setLookAtM(mViewMatrix, 0, 0, 7f, -19, 0f, 0f, 0f, 0f, 1.0f, 0f);
-//        //Projection Matrix, offset, FOV, aspect ratio, near clipping, far clipping
+                Matrix.setLookAtM(mViewMatrix, 0, 0, 6f, -16, 0f, 0f, 0f, 0f, 1.0f, 0f);
                 Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f / 5.0f, 0.1f, 100f);
-//        // Calculate the projection and view transformation
                 Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
                 Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
 
-//        Matrix.setRotateM(mMVPMatrix, 0, mAngle, 0, -1f, 0);
-//        Matrix.scaleM(mMVPMatrix, 0, 0.1f, 0.1f, 1.0f);
-//        // Combine the rotation matrix with the projection and camera view
-//        // Note that the mMVPMatrix factor *must be first* in order
-//        // for the matrix multiplication product to be correct.
-//        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                // Draw shape
-
-                //GLES20.glDisable(GLES20.GL_CULL_FACE);
-                test[i][j].draw(scratch);
+                GLES20.glDisable(GLES20.GL_CULL_FACE);
+                active[i][j].draw(scratch);
             }
-            heightoffset+=2.02;
+            heightoffset+=2;
+        }
+
+        heightoffset = 0;
+        for(int i=99;i>=passive.length-1-completedRows;i--) {
+            for (int j=0; j<16;j++){
+                float[] scratch = new float[16];
+
+                Matrix.setIdentityM(mRotationMatrix, 0);
+                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, -2.18f);
+                Matrix.setRotateM(mRotationMatrix, 0, mAngle + passive[i][j].angleOffset, 0, -1f, 0);
+                Matrix.translateM(mRotationMatrix, 0, 0f, 0f, 2.18f);
+                Matrix.scaleM(mRotationMatrix, 0, 0.5f, 0.5f, 0.5f);
+                Matrix.translateM(mRotationMatrix, 0, 0f, -16f-heightoffset, 0f);
+                Matrix.setLookAtM(mViewMatrix, 0, 0, 6f, -16, 0f, 0f, 0f, 0f, 1.0f, 0f);
+                Matrix.perspectiveM(mProjectionMatrix, 0, 60f, 3.0f / 5.0f, 0.1f, 100f);
+                Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+                Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+
+                GLES20.glDisable(GLES20.GL_CULL_FACE);
+                passive[i][j].draw(scratch);
+            }
+            heightoffset+=2;
+        }
+    }
+    public void allocateLine(int layer){
+        try {
+
+            float offsetAngle = 0;
+        for(int i=0;i<16;i++){
+            passive[layer][i] =  new CubeModel(context, "testcube", offsetAngle, false);
+            offsetAngle +=22.5;
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     public float getAngle() {
