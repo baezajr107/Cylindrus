@@ -13,9 +13,9 @@
         android:id="@+id/easyButton"
         android:width="256dp"
         android:height="144dp"
+        android:layout_marginTop="76dp"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/hardButton"
-        android:layout_marginTop="111dp" />
+        android:layout_alignLeft="@+id/hardButton" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -25,6 +25,7 @@
         android:width="256dp"
         android:height="144dp"
         android:id="@+id/hardButton"
-        android:layout_below="@+id/easyButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="71dp" />
 </RelativeLayout>

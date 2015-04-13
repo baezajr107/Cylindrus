@@ -22,9 +22,10 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_marginTop="55dp"
-        android:text=" Cylindrus "
-        android:textSize="40dp"
+        android:text="@string/title"
+        android:textSize="40sp"
         android:id="@+id/titleText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="41dp" />
+        android:layout_marginBottom="41dp"
+        android:textColor="#fff9ff40" />
 </RelativeLayout>

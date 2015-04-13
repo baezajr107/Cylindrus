@@ -48,6 +48,10 @@ class CubeTestSurfaceView extends GLSurfaceView
         timer = 1;
         run();
     }
+
+    private void run() {
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         // MotionEvent reports input details from the touch screen

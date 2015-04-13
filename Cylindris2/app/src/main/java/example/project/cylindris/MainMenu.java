@@ -18,20 +18,9 @@ public class MainMenu extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Button settingsButton = (Button) findViewById(R.id.settingsButton);
+
         Button startButton = (Button) findViewById(R.id.startButton);
 
-        settingsButton.setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        startActivity(new Intent(getApplicationContext(), ScoreMenu.class));
-
-                    }
-
-                }
-
-
-        );
 
 
         startButton.setOnClickListener(
