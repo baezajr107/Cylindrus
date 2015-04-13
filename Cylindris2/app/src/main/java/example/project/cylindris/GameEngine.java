@@ -2,6 +2,7 @@ package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -9,7 +10,7 @@ import android.view.MotionEvent;
 import example.project.cylindris.ImportTestRenderer;
 public class GameEngine extends Activity {
     private GLSurfaceView mGLView;
-
+    MediaPlayer player =  MediaPlayer.create(GameEngine.this,R.raw.Cylindris);
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +18,28 @@ public class GameEngine extends Activity {
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
+
+
+        player.start();
     }
+
+    public void onPause(Bundle savedInstanceState) {
+        super.onPause();
+        player.stop();
+
+
+    }
+    public void onResume( Bundle savedInstanceState) {
+        super.onResume();
+        player.start();
+
+
+    }
+
 }
+
+
+
 class GameEngineView extends GLSurfaceView
 {
     private final CubeTestRenderer  mRenderer;
