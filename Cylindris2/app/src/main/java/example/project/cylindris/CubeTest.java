@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.content.Intent;
 
 import java.util.Random;
 
@@ -16,6 +17,9 @@ import example.project.cylindris.ImportTestRenderer;
 public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
     MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
+    Bundle bundle = getIntent().getExtras();
+    int mode = bundle.getInt("Mode");
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,9 @@ class CubeTestSurfaceView extends GLSurfaceView
     public int currentFront;
     public long timer;
     Shape currentShape = new Shape();
+
+
+
 
     public CubeTestSurfaceView(Context context) {
         super(context);

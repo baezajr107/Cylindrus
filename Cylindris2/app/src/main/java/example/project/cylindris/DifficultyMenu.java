@@ -21,6 +21,7 @@ public class DifficultyMenu extends ActionBarActivity {
                 new Button.OnClickListener(){
                     public void onClick(View v){
                         Intent intent = new Intent(getApplicationContext(), CubeTest.class);
+                        intent.putExtra("Mode",0);
                         startActivity(intent);
 
                     }
@@ -33,7 +34,8 @@ public class DifficultyMenu extends ActionBarActivity {
         hardcoreButton.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        Intent intent = new Intent(getApplicationContext(), GameEngine.class);
+                        Intent intent = new Intent(getApplicationContext(), CubeTest.class);
+                        intent.putExtra("Mode",1);
                         startActivity(intent);
 
                     }
