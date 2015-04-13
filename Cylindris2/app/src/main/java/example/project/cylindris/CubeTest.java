@@ -18,8 +18,9 @@ public class CubeTest extends Activity {
     private GLSurfaceView mGLView;
     MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
     Bundle bundle = getIntent().getExtras();
-    int mode = bundle.getInt("Mode");
-    
+    int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
+    // button presses of the previous activity
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
