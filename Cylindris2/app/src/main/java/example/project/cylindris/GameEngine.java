@@ -7,6 +7,8 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
+import example.project.cylindris.ImportTestRenderer;
+
 public class GameEngine extends Activity {
     private GLSurfaceView mGLView;
     MediaPlayer player =  MediaPlayer.create(GameEngine.this,R.raw.cylindrissong);
