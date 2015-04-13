@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import java.util.Random;
 
 import example.project.cylindris.ImportTestRenderer;
-public class CubeTest extends Activity {
+public class CubeTest extends Activity{
     private GLSurfaceView mGLView;
 
     @Override
@@ -22,14 +22,69 @@ public class CubeTest extends Activity {
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
+        Thread gameThread = new Thread(new TimerThread());
+        gameThread.run();
+    }
+
+
+}
+
+class TimerThread implements Runnable {
+    @Override
+    public void run() {
+        while (true) {
+            if(!CubeTestRenderer.loaded) {
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Background timer ticked");
+//            if (!mGLView.currentShape.shiftDown(mRenderer.occupationMatrix)) {
+//                clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive);
+//                Random shapeRandomizer = new Random();
+//                Shape.type newtype = Shape.type.T;
+//                int choice = shapeRandomizer.nextInt(7);
+//                switch (choice) {
+//                    case 0:
+//                        newtype = Shape.type.L;
+//                        break;
+//                    case 1:
+//                        newtype = Shape.type.J;
+//                        break;
+//                    case 2:
+//                        newtype = Shape.type.Z;
+//                        break;
+//                    case 3:
+//                        newtype = Shape.type.S;
+//                        break;
+//                    case 4:
+//                        newtype = Shape.type.O;
+//                        break;
+//                    case 5:
+//                        newtype = Shape.type.T;
+//                        break;
+//                    case 6:
+//                        newtype = Shape.type.I;
+//                        break;
+//                }
+//
+//                if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, Shape.type.I)) {
+//                    //game over action
+//                }
+//            }
+//            updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
+//        }
+        }
 
     }
 }
+
 class CubeTestSurfaceView extends GLSurfaceView
 {
-    private final CubeTestRenderer  mRenderer;
+    public final CubeTestRenderer  mRenderer;
     public int currentFront;
-    public long timer;
     Shape currentShape = new Shape();
 
     public CubeTestSurfaceView(Context context) {
@@ -45,8 +100,7 @@ class CubeTestSurfaceView extends GLSurfaceView
         // Turn off for continuous render when no user events ex. touch
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         currentFront = 8;
-        timer = 1;
-        run();
+
     }
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -102,7 +156,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                             case 6: newtype = Shape.type.I; break;
                         }
 
-                        if(!currentShape.initialize(mRenderer.occupationMatrix,currentFront,newtype)){
+                        if(!currentShape.initialize(mRenderer.occupationMatrix,currentFront,Shape.type.I)){
                             //game over action
                         }
                     }

@@ -24,6 +24,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     public volatile float mAngle;
     public boolean[][] occupationMatrix = new boolean[15][16];
     public int completedRows = 0;
+    public static boolean loaded = false;
     public static int loadShader(int type, String shaderCode)
     {
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
@@ -69,7 +70,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
             for(int i=0;i<16;i++){
                 passive[99][i].color = white;
             }
-
+            loaded = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
