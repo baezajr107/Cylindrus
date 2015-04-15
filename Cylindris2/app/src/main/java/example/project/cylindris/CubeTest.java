@@ -22,25 +22,18 @@ public class CubeTest extends Activity{
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
-        Thread gameThread = new Thread(new TimerThread());
-        //gameThread.run();
-    }
-
-
-}
-
-class TimerThread implements Runnable {
-    @Override
-    public void run() {
-
     }
 }
+
 
 class CubeTestSurfaceView extends GLSurfaceView
 {
     public final CubeTestRenderer  mRenderer;
     public int currentFront;
     public static Shape currentShape = new Shape();
+    public static int level = 1;
+    public static int timer = 1000;
+    public static int score = 0;
 
     public CubeTestSurfaceView(Context context) {
         super(context);
@@ -63,17 +56,18 @@ class CubeTestSurfaceView extends GLSurfaceView
                 while (true) {
                     if(!CubeTestRenderer.loaded) {
                         try {
-                            Thread.sleep(15000);
+                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        break;
+
                     }
 
              else {
 
                         if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
-                            clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive);
+                            score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
+                            score+=100;
                             Random shapeRandomizer = new Random();
                             Shape.type newtype = Shape.type.T;
                             int choice = shapeRandomizer.nextInt(7);
@@ -101,15 +95,16 @@ class CubeTestSurfaceView extends GLSurfaceView
                                     break;
                             }
 
-                            if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, Shape.type.I)) {
+                            if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, newtype)) {
                                 //game over action
                             }
                         }
+
                         updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
                         requestRender();
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(timer);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -161,7 +156,8 @@ class CubeTestSurfaceView extends GLSurfaceView
                 //down
                 else if(y>height*.8){
                     if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
-                        clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive);
+                        score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
+                        score+=100;
                         Random shapeRandomizer = new Random();
                         Shape.type newtype = Shape.type.T;
                         int choice = shapeRandomizer.nextInt(7);
@@ -179,6 +175,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                             //game over action
                         }
                     }
+
                     updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
                 }
                 //rotate
@@ -249,8 +246,9 @@ class CubeTestSurfaceView extends GLSurfaceView
     }
 
 
-    public boolean clearComplete(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes){
+    public int clearComplete(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes){
 
+        int completed = 0;
         for(int i=14;i>=0;i--){
             int takenBlocks = 0;
             for(int j=0;j<16;j++){
@@ -260,13 +258,16 @@ class CubeTestSurfaceView extends GLSurfaceView
             }
             if(takenBlocks==16){
                 mRenderer.completedRows++;
-                if(mRenderer.completedRows>95){
-                    return true;//congratulations, you have absolutely no life
+                if(mRenderer.completedRows%1 == 0){
+                    level ++;
+                    if(timer>=100)
+                        timer-=100;
                 }
                 shiftActiveToPassive(occupationMatrix,activeCubes,passiveCubes,i);
+                completed++;
             }
         }
-        return false;
+        return completed;
 
 
     }
@@ -288,21 +289,32 @@ class CubeTestSurfaceView extends GLSurfaceView
         for(int i=layer;i<activeCubes.length-1;i++){
            for(int j=0;j<16;j++) {
                occupationMatrix[i][j] = occupationMatrix[i+1][j];
+               float[] tempcolors = new float[4];
+               for(int k=0;k<4;k++){
+                   tempcolors[k] = activeCubes[i+1][j].color[k];
+               }
                activeCubes[i][j] = activeCubes[i+1][j];
+               activeCubes[i][j].color = new float[4];
+               for(int k=0;k<4;k++){
+                   activeCubes[i][j].color[k] = tempcolors[k];
+               }
            }
         }
         //clear top row
         try{
-//            int offsetAngle = 0;
+            float offsetAngle = (16-currentFront)*22.5f;
             Random value = new Random();
             for(int i=0;i<16;i++){
                 occupationMatrix[activeCubes.length-1][i]=false;
-//                activeCubes[activeCubes.length-1][i] = new CubeModel(mRenderer.context, "testcube", activeCubes[activeCubes.length-2][i].angleOffset, false);
-//                activeCubes[activeCubes.length-1][i].color[0] = value.nextFloat();
-//                activeCubes[activeCubes.length-1][i].color[1] = value.nextFloat();
-//                activeCubes[activeCubes.length-1][i].color[2] = value.nextFloat();
-                activeCubes[activeCubes.length-1][i].color[3] = 0;
-//                offsetAngle+=22.5;
+                float[] colors = new float[4];
+                colors[0] = 1f;
+                colors[1] = 1f;
+                colors[2] = 1f;
+                colors[3] = 1f;
+                activeCubes[activeCubes.length-1][i].color = colors;
+                //activeCubes[activeCubes.length-1][i] = new CubeModel(mRenderer.context, "testcube", offsetAngle, false,colors);
+
+                offsetAngle+=22.5;
             }
         } catch (Exception e) {
             e.printStackTrace();
