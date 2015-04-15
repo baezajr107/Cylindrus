@@ -15,5 +15,6 @@
     <string name="title_activity_game_engine">GameEngine</string>
     <string name="title">Cylindrus</string>
     <string name="title_activity_game_screen">gameScreen</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
