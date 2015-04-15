@@ -14,5 +14,6 @@
     <string name="Easy">Casual</string>
     <string name="title_activity_game_engine">GameEngine</string>
     <string name="title">Cylindrus</string>
+    <string name="title_activity_game_screen">gameScreen</string>
 
 </resources>
