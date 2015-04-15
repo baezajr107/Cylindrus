@@ -20,25 +20,9 @@ public class gameActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         player.start();
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                int backCount = getSupportFragmentManager().getBackStackEntryCount();
-                if (backCount == 0)
-                {
-                    finish();
-                }
-            }
-        });
 
-        if (savedInstanceState == null)
-        {
-
-            getSupportFragmentManager().beginTransaction().add(R.id.container, new Fragment())
-                    .addToBackStack(null)
-                    .commit();
         }
     }
 
 
-}
+
