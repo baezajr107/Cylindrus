@@ -43,7 +43,21 @@ public class MainMenu extends ActionBarActivity {
 
     }
 
-
+    public void beginOGLES_Test(View view)
+    {
+        Intent intent = new Intent(this, OGLES_Test.class);
+        startActivity(intent);
+    }
+    public void beginImportTest(View view)
+    {
+        Intent intent = new Intent(this, ImportTest.class);
+        startActivity(intent);
+    }
+    public void beginCubeTest(View view)
+    {
+        Intent intent = new Intent(this, CubeTest.class);
+        startActivity(intent);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

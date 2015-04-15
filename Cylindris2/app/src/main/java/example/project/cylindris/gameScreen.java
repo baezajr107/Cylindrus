@@ -1,5 +1,6 @@
 package example.project.cylindris;
 
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 
-public class gameScreen extends ActionBarActivity {
+public class gameScreen extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
