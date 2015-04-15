@@ -4,34 +4,29 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="example.project.cylindris.MainMenu">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Scores"
-        android:width="320dp"
-        android:id="@+id/settingsButton"
-        android:layout_below="@+id/startButton"
-        android:layout_alignLeft="@+id/startButton"
-        android:layout_marginTop="43dp" />
+    tools:context="example.project.cylindris.MainMenu"
+    android:background="@android:color/black">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Start"
+        android:height="120dp"
         android:width="320dp"
         android:id="@+id/startButton"
-        android:layout_below="@+id/titleText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="78dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_marginTop="55dp"
-        android:text=" Cylindrus "
+        android:text="@string/title"
+        android:textSize="40sp"
         android:id="@+id/titleText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="41dp" />
+        android:layout_marginBottom="41dp"
+        android:textColor="#fff9ff40" />
 </RelativeLayout>

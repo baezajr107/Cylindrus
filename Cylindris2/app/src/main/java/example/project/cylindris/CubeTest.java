@@ -3,17 +3,25 @@ package example.project.cylindris;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.content.Intent;
 
 import java.util.Random;
 
 import example.project.cylindris.ImportTestRenderer;
+
 public class CubeTest extends Activity{
     public static GLSurfaceView mGLView;
+    MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
+    Bundle bundle = getIntent().getExtras();
+    int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
+    // button presses of the previous activity
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,6 +30,8 @@ public class CubeTest extends Activity{
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
+        player.start();
+
     }
 }
 
@@ -34,6 +44,9 @@ class CubeTestSurfaceView extends GLSurfaceView
     public static int level = 1;
     public static int timer = 1000;
     public static int score = 0;
+
+
+
 
     public CubeTestSurfaceView(Context context) {
         super(context);
@@ -116,6 +129,10 @@ class CubeTestSurfaceView extends GLSurfaceView
 
 
     }
+
+    private void run() {
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         // MotionEvent reports input details from the touch screen

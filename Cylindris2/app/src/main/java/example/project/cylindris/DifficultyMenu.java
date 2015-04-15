@@ -15,12 +15,27 @@ public class DifficultyMenu extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_difficulty_menu);
-
+        Button hardcoreButton = ( Button) findViewById(R.id.hardButton);
         Button casualButton = (Button) findViewById(R.id.easyButton);
         casualButton.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        Intent intent = new Intent(getApplicationContext(), GameEngine.class);
+                        Intent intent = new Intent(getApplicationContext(), CubeTest.class);
+                        intent.putExtra("Mode",0);
+                        startActivity(intent);
+
+                    }
+
+                }
+
+
+        );
+
+        hardcoreButton.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        Intent intent = new Intent(getApplicationContext(), CubeTest.class);
+                        intent.putExtra("Mode",1);
                         startActivity(intent);
 
                     }
