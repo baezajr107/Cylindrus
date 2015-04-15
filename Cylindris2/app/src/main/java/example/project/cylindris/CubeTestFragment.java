@@ -1,37 +1,48 @@
 package example.project.cylindris;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.content.Intent;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.Random;
 
 import example.project.cylindris.ImportTestRenderer;
-public class CubeTest extends Activity {
+public class CubeTestFragment extends Fragment {
     private GLSurfaceView mGLView;
-//    MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
-    Bundle bundle = getIntent().getExtras();
-    int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
-    // button presses of the previous activity
+
+
+    public CubeTestFragment()
+    {
+
+        super();
+
+    }
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Create an OpenGL ES view
-        mGLView = new CubeTestSurfaceView(this);
-        //Set view to mGLView
-        setContentView(mGLView);
-  //      player.start();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        mGLView = new CubeTestFragmentSurfaceView(this.getActivity().getApplicationContext());
+        return mGLView;
+
     }
+
+
+
 }
-class CubeTestSurfaceView extends GLSurfaceView
+class CubeTestFragmentSurfaceView extends GLSurfaceView
 {
     private final CubeTestRenderer  mRenderer;
     public int currentFront;
@@ -41,7 +52,7 @@ class CubeTestSurfaceView extends GLSurfaceView
 
 
 
-    public CubeTestSurfaceView(Context context) {
+    public CubeTestFragmentSurfaceView(Context context) {
         super(context);
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
@@ -130,7 +141,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                 }
 
                 requestRender();
-            break;
+                break;
         }
 
         return true;
@@ -226,10 +237,10 @@ class CubeTestSurfaceView extends GLSurfaceView
         }
         //shift active down
         for(int i=layer;i<activeCubes.length-1;i++){
-           for(int j=0;j<16;j++) {
-               occupationMatrix[i][j] = occupationMatrix[i+1][j];
-               activeCubes[i][j] = activeCubes[i+1][j];
-           }
+            for(int j=0;j<16;j++) {
+                occupationMatrix[i][j] = occupationMatrix[i+1][j];
+                activeCubes[i][j] = activeCubes[i+1][j];
+            }
         }
         //clear top row
         try{
