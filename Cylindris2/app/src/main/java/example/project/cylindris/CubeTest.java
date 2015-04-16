@@ -38,7 +38,7 @@ public class CubeTest extends Activity{
         setContentView(mGLView);
         LayoutInflater test = getLayoutInflater();
         addContentView(test.inflate(R.layout.game_overlay,null),new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        scoreText =(TextView) findViewById(R.id.score);
+        scoreText = (TextView) findViewById(R.id.score);
         levelText = (TextView) findViewById(R.id.level);
         updateData();
         //player.start();
@@ -81,7 +81,7 @@ class CubeTestSurfaceView extends GLSurfaceView
     public static Shape currentShape = new Shape();
     public static int level = 1;
     public static int timer = 1000;
-    public static int score = -100;
+    public static int score = -100;//set to -100 to compensate for initial piece
     public static TextView scoreText;
     public static TextView levelText;
 
