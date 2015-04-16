@@ -38,15 +38,37 @@ public class CubeTest extends Activity{
         setContentView(mGLView);
         LayoutInflater test = getLayoutInflater();
         addContentView(test.inflate(R.layout.game_overlay,null),new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        scoreText =(TextView) findViewById(R.id.score);
-//        levelText = (TextView) findViewById(R.id.level);
+        scoreText =(TextView) findViewById(R.id.score);
+        levelText = (TextView) findViewById(R.id.level);
+        updateData();
         //player.start();
 
     }
 
-    public static void updateData(int score, int level){
-        scoreText.setText("Score" + score);
-        levelText.setText("Level" + level);
+    public void updateData(){
+        new Thread(new Runnable() {
+
+            public void run() {
+                Shape currentShape = CubeTestSurfaceView.currentShape;
+
+                while (true) {
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                    }// Ignoring Interrupted Exception, we'll just wait again...
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            scoreText.setText("Score" + CubeTestSurfaceView.score);
+                            levelText.setText("Level" + CubeTestSurfaceView.level);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
 }
@@ -59,12 +81,12 @@ class CubeTestSurfaceView extends GLSurfaceView
     public static Shape currentShape = new Shape();
     public static int level = 1;
     public static int timer = 1000;
-    public static int score = 0;
+    public static int score = -100;
     public static TextView scoreText;
     public static TextView levelText;
 
 
-    public CubeTestSurfaceView(Context context) {
+    public CubeTestSurfaceView(final Context context) {
         super(context);
 
         // Create an OpenGL ES 2.0 context
@@ -97,7 +119,6 @@ class CubeTestSurfaceView extends GLSurfaceView
                         if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
                             score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
                             score+=100;
-
                             Random shapeRandomizer = new Random();
                             Shape.type newtype = Shape.type.T;
                             int choice = shapeRandomizer.nextInt(7);
