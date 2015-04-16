@@ -24,6 +24,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     public volatile float mAngle;
     public boolean[][] occupationMatrix = new boolean[15][16];
     public int completedRows = 0;
+    public static boolean loaded = false;
     public static int loadShader(int type, String shaderCode)
     {
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
@@ -50,18 +51,24 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
                 float offsetAngle = 0;
                 Random value = new Random();
                 for(int j=0;j<16;j++) {
-                    active[i][j] = new CubeModel(context, "testcube", offsetAngle, false);
-//                    active[i][j].color[0] = value.nextFloat();
-//                    active[i][j].color[1] = value.nextFloat();
-//                    active[i][j].color[2] = value.nextFloat();
-                    active[i][j].color[3] = 0;
+                    float[] colors = new float[4];
+                    colors[0] = 1f;
+                    colors[1] = 1f;
+                    colors[2] = 1f;
+                    colors[3] = 1f;
+                    active[i][j] = new CubeModel(context, "testcube", offsetAngle, false,colors);
                     offsetAngle +=22.5;
                 }
             }
 
                 float offsetAngle = 0;
                 for(int j=0;j<16;j++) {
-                    passive[passive.length-1][j] = new CubeModel(context, "testcube", offsetAngle, false);
+                    float[] colors = new float[4];
+                    colors[0] = 1f;
+                    colors[1] = 1f;
+                    colors[2] = 1f;
+                    colors[3] = 1f;
+                    passive[passive.length-1][j] = new CubeModel(context, "testcube", offsetAngle, false,colors);
                     offsetAngle +=22.5;
                 }
 
@@ -69,7 +76,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
             for(int i=0;i<16;i++){
                 passive[99][i].color = white;
             }
-
+            loaded = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,11 +142,18 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
     public void allocateLine(int layer){
         try {
 
-            float offsetAngle = 0;
-        for(int i=0;i<16;i++){
-            passive[layer][i] =  new CubeModel(context, "testcube", offsetAngle, false);
-            offsetAngle +=22.5;
-        }
+
+            Random value = new Random();
+            for(int i=0;i<16;i++) {
+                float[] colors = new float[4];
+                colors[0] = 1f;
+                colors[1] = 1f;
+                colors[2] = 1f;
+                colors[3] = 1f;
+                passive[layer][i] = new CubeModel(context, "testcube", passive[layer+1][i].angleOffset, false, colors);
+
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
