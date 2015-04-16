@@ -32,7 +32,7 @@ public class CubeModel
     private short face_vn[];
     private int num_verts;
     static final int COORDS_PER_VERTEX = 3;
-    public float color[] = {0,0,0,0};
+    public float color[] = {1,1,1,1};
     public float angleOffset;
     boolean taken=false;
 
@@ -55,8 +55,10 @@ public class CubeModel
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public CubeModel(Context context, String object,float offsetAngle,boolean istaken) throws Exception
+    public CubeModel(Context context, String object,float offsetAngle,boolean istaken, float[] colors) throws Exception
     {
+        for(int i=0;i<4;i++)
+            color[i]=colors[i];
         taken = istaken;
         angleOffset = offsetAngle;
         Scanner inOBJ;
