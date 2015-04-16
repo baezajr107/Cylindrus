@@ -18,10 +18,7 @@ public class MainMenu extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-
         Button startButton = (Button) findViewById(R.id.startButton);
-
-
 
         startButton.setOnClickListener(
                 new Button.OnClickListener(){
@@ -29,18 +26,8 @@ public class MainMenu extends ActionBarActivity {
                         startActivity(new Intent(getApplicationContext(), DifficultyMenu.class));
 
                     }
-
                 }
-
-
         );
-
-
-
-
-
-
-
     }
 
     public void beginOGLES_Test(View view)
