@@ -8,8 +8,12 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.content.Intent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -17,22 +21,34 @@ import example.project.cylindris.ImportTestRenderer;
 
 public class CubeTest extends Activity{
     public static GLSurfaceView mGLView;
-    MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
-    Bundle bundle = getIntent().getExtras();
-    int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
+    //MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
+  //  Bundle bundle = getIntent().getExtras();
+   // int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
     // button presses of the previous activity
-
+    public static TextView scoreText;
+    public static TextView levelText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create an OpenGL ES view
+
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
-        player.start();
+        LayoutInflater test = getLayoutInflater();
+        addContentView(test.inflate(R.layout.game_overlay,null),new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        scoreText =(TextView) findViewById(R.id.score);
+//        levelText = (TextView) findViewById(R.id.level);
+        //player.start();
 
     }
+
+    public static void updateData(int score, int level){
+        scoreText.setText("Score" + score);
+        levelText.setText("Level" + level);
+    }
+
 }
 
 
@@ -44,12 +60,13 @@ class CubeTestSurfaceView extends GLSurfaceView
     public static int level = 1;
     public static int timer = 1000;
     public static int score = 0;
-
-
+    public static TextView scoreText;
+    public static TextView levelText;
 
 
     public CubeTestSurfaceView(Context context) {
         super(context);
+
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -62,25 +79,25 @@ class CubeTestSurfaceView extends GLSurfaceView
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         currentFront = 8;
 
-
         new Thread(new Runnable() {
+
             public void run() {
                 Shape currentShape = CubeTestSurfaceView.currentShape;
+
                 while (true) {
                     if(!CubeTestRenderer.loaded) {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
+                        }// Ignoring Interrupted Exception, we'll just wait again...
                     }
 
-             else {
+                    else {
 
                         if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
                             score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
                             score+=100;
+
                             Random shapeRandomizer = new Random();
                             Shape.type newtype = Shape.type.T;
                             int choice = shapeRandomizer.nextInt(7);
@@ -119,7 +136,6 @@ class CubeTestSurfaceView extends GLSurfaceView
                     try {
                         Thread.sleep(timer);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
         }
 
@@ -175,6 +191,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                     if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
                         score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
                         score+=100;
+                        //scoreText.setText("Score: " + score);
                         Random shapeRandomizer = new Random();
                         Shape.type newtype = Shape.type.T;
                         int choice = shapeRandomizer.nextInt(7);
