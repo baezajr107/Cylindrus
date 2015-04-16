@@ -2,37 +2,32 @@ package example.project.cylindris;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
-import android.media.MediaPlayer;
+import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Random;
 
-import example.project.cylindris.ImportTestRenderer;
 
 public class CubeTest extends Activity{
-    public static GLSurfaceView mGLView;
-    //MediaPlayer player =  MediaPlayer.create(CubeTest.this,R.raw.cylindrissong);
-  //  Bundle bundle = getIntent().getExtras();
-   // int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
-    // button presses of the previous activity
+    public static CubeTestSurfaceView mGLView;
+
     public static TextView scoreText;
     public static TextView levelText;
+    static boolean finish = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create an OpenGL ES view
-
+        Bundle bundle = getIntent().getExtras();
+        int mode = bundle.getInt("Mode"); // this is the difficulty variable passed through by the
         mGLView = new CubeTestSurfaceView(this);
         //Set view to mGLView
         setContentView(mGLView);
@@ -41,7 +36,7 @@ public class CubeTest extends Activity{
         scoreText = (TextView) findViewById(R.id.score);
         levelText = (TextView) findViewById(R.id.level);
         updateData();
-        //player.start();
+
 
     }
 
@@ -51,7 +46,7 @@ public class CubeTest extends Activity{
             public void run() {
                 Shape currentShape = CubeTestSurfaceView.currentShape;
 
-                while (true) {
+                while (!finish) {
 
                     try {
                         Thread.sleep(100);
@@ -62,8 +57,36 @@ public class CubeTest extends Activity{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            scoreText.setText("Score" + CubeTestSurfaceView.score);
-                            levelText.setText("Level" + CubeTestSurfaceView.level);
+                            if(!mGLView.endgame) {
+                                scoreText.setText("Score" + CubeTestSurfaceView.score);
+                                levelText.setText("Level" + CubeTestSurfaceView.level);
+                            }
+                            else{
+
+                                scoreText.setVisibility(View.INVISIBLE);
+                                levelText.setVisibility(View.INVISIBLE);
+
+                                try {
+                                    Thread.sleep(3000);
+                                }catch(InterruptedException e){
+                                    e.printStackTrace();
+                                }
+
+                                TextView endgame1 = (TextView)findViewById(R.id.endgame1);
+                                TextView endgame2 = (TextView)findViewById(R.id.endgame2);
+
+                                endgame2.setText("You scored " + mGLView.score + " points");
+
+                                endgame1.setVisibility(View.VISIBLE);
+                                endgame2.setVisibility(View.VISIBLE);
+                                finish = true;
+                                try {
+                                    Thread.sleep(2000);
+                                }catch(InterruptedException e){
+                                    e.printStackTrace();
+                                }
+                                startActivity(new Intent(getApplicationContext(), DifficultyMenu.class));
+                            }
                         }
                     });
                 }
@@ -84,11 +107,12 @@ class CubeTestSurfaceView extends GLSurfaceView
     public static int score = -100;//set to -100 to compensate for initial piece
     public static TextView scoreText;
     public static TextView levelText;
+    public static boolean endgame = false;
+    public static boolean ispaused = false;
 
 
     public CubeTestSurfaceView(final Context context) {
         super(context);
-
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -106,7 +130,7 @@ class CubeTestSurfaceView extends GLSurfaceView
             public void run() {
                 Shape currentShape = CubeTestSurfaceView.currentShape;
 
-                while (true) {
+                while (!endgame) {
                     if(!CubeTestRenderer.loaded) {
                         try {
                             Thread.sleep(1000);
@@ -114,7 +138,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                         }// Ignoring Interrupted Exception, we'll just wait again...
                     }
 
-                    else {
+                    else if(!ispaused) {
 
                         if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
                             score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
@@ -147,6 +171,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                             }
 
                             if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, newtype)) {
+                                endgame = true;
                                 endGame();
                                 //game over action
                             }
@@ -179,77 +204,98 @@ class CubeTestSurfaceView extends GLSurfaceView
 
 
         switch (e.getAction()) {
+
             case MotionEvent.ACTION_UP:
+                if(!ispaused && !endgame && mRenderer.loaded) {
+                    float x = e.getX();
+                    float y = e.getY();
+                    DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
+                    int height = metrics.heightPixels;
+                    int width = metrics.widthPixels;
 
-                float x = e.getX();
-                float y = e.getY();
-                DisplayMetrics metrics = this.getContext().getResources().getDisplayMetrics();
-                int height = metrics.heightPixels;
-                int width = metrics.widthPixels;
+                    //left or right
+                    if (y <= height * .8 && y >= height * .2) {
+                        float rotateAngle = -22.5f;
+                        if (x > width / 2) {
+                            rotateAngle = -1 * rotateAngle;
+                            if (currentShape.shiftRight(mRenderer.occupationMatrix)) {
+                                currentFront = ((currentFront - 1) % 16) < 0 ? (16 + (currentFront - 1) % 16) : (currentFront - 1) % 16;
+                                mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                                updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
+                            }
 
-                //left or right
-                if(y<=height*.8 && y>=height*.2) {
-                    float rotateAngle = -22.5f;
-                    if (x > width / 2) {
-                        rotateAngle = -1 * rotateAngle;
-                        if(currentShape.shiftRight(mRenderer.occupationMatrix)) {
-                            currentFront = ((currentFront - 1) % 16) < 0 ? (16 + (currentFront - 1) % 16) : (currentFront - 1) % 16;
-                            mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
-                            updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
+                        } else {
+                            if (currentShape.shiftLeft(mRenderer.occupationMatrix)) {
+                                currentFront = ((currentFront + 1) % 16) < 0 ? (16 + (currentFront + 1) % 16) : (currentFront + 1) % 16;
+                                mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
+                                updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
+                            }
                         }
 
                     }
-                    else{
-                        if(currentShape.shiftLeft(mRenderer.occupationMatrix)) {
-                            currentFront = ((currentFront + 1) % 16) < 0 ? (16 + (currentFront + 1) % 16) : (currentFront + 1) % 16;
-                            mRenderer.setAngle(mRenderer.getAngle() + rotateAngle);
-                            updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
+                    //down
+                    else if (y > height * .8) {
+                        if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
+                            score += clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive) * 1000;
+                            score += 100;
+                            //scoreText.setText("Score: " + score);
+                            Random shapeRandomizer = new Random();
+                            Shape.type newtype = Shape.type.T;
+                            int choice = shapeRandomizer.nextInt(7);
+                            switch (choice) {
+                                case 0:
+                                    newtype = Shape.type.L;
+                                    break;
+                                case 1:
+
+                                    newtype = Shape.type.J;
+                                    break;
+                                case 2:
+                                    newtype = Shape.type.Z;
+                                    break;
+                                case 3:
+                                    newtype = Shape.type.S;
+                                    break;
+                                case 4:
+                                    newtype = Shape.type.O;
+                                    break;
+                                case 5:
+                                    newtype = Shape.type.T;
+                                    break;
+                                case 6:
+                                    newtype = Shape.type.I;
+                                    break;
+                            }
+
+                            if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, newtype)) {
+                                endgame = true;
+                                endGame();
+
+                                //game over action
+                            }
+                        }
+
+                        updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
+                    }
+                    //rotate
+                    else if (y < height * .2) {
+
+                        if (currentShape.rotate(mRenderer.occupationMatrix)) {
+                            updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
                         }
                     }
+
+                    requestRender();
+                }
+                else if(endgame){
 
                 }
-                //down
-                else if(y>height*.8){
-                    if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
-                        score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
-                        score+=100;
-                        //scoreText.setText("Score: " + score);
-                        Random shapeRandomizer = new Random();
-                        Shape.type newtype = Shape.type.T;
-                        int choice = shapeRandomizer.nextInt(7);
-                        switch(choice){
-                            case 0: newtype = Shape.type.L; break;
-                            case 1: newtype = Shape.type.J; break;
-                            case 2: newtype = Shape.type.Z; break;
-                            case 3: newtype = Shape.type.S; break;
-                            case 4: newtype = Shape.type.O; break;
-                            case 5: newtype = Shape.type.T; break;
-                            case 6: newtype = Shape.type.I; break;
-                        }
-
-                        if(!currentShape.initialize(mRenderer.occupationMatrix,currentFront,newtype)){
-                            endGame();
-
-                            //game over action
-                        }
-                    }
-
-                    updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
-                }
-                //rotate
-                else if(y<height*.2){
-
-                    if(currentShape.rotate(mRenderer.occupationMatrix)){
-                        updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
-                    }
-                }
-
-                requestRender();
-            break;
+                    break;
         }
 
         return true;
     }
+
 
     public void updateColors(CubeModel[][] cubes, int[] xcoords, int[] ycoords, Shape.type type){
         for(int i=0;i<4;i++){
@@ -352,6 +398,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                    tempcolors[k] = activeCubes[i+1][j].color[k];
                }
                activeCubes[i][j] = activeCubes[i+1][j];
+               activeCubes[i][j].color = null;
                activeCubes[i][j].color = new float[4];
                for(int k=0;k<4;k++){
                    activeCubes[i][j].color[k] = tempcolors[k];
@@ -381,30 +428,35 @@ class CubeTestSurfaceView extends GLSurfaceView
     public void endGame() {
 
         boolean isSpinning = true;
-        boolean cameraRising = true;
-        boolean movingDown = false;
-        int cameraOffset = 0;
-        int depthOffset = 0;
+
+        for(int i=0;i<15;i++){
+            for(int j=0;j<16;j++){
+                float[] color = new float[4];
+                color[0] = .5f;
+                color[1] = .5f;
+                color[2] = .5f;
+                color[3] = .1f;
+                mRenderer.active[i][j].color = color;
+            }
+            try {
+                Thread.sleep(50);
+            }catch(InterruptedException e){
+
+            }
+            requestRender();
+        }
+
         while (isSpinning) {
+            mRenderer.setAngle(mRenderer.getAngle()+22.5f);
+            mRenderer.depthOffset++;
 
+            if(mRenderer.depthOffset>mRenderer.completedRows+50){
+               isSpinning= false;
+            }
 
-            if(cameraOffset>=10){
-                cameraRising = false;
-                movingDown = true;
-            }
-            else{
-                cameraOffset++;
-            }
-            if(!cameraRising && movingDown){
-                depthOffset++;
-            }
-            if(depthOffset>mRenderer.completedRows+15){
-                isSpinning= false;
-            }
-            mRenderer.setAngle(mRenderer.getAngle()+22.5f);;
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
             }catch(InterruptedException e){
 
             }
