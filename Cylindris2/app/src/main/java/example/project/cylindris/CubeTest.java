@@ -89,8 +89,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                        }
-
+                        }// Ignoring Interrupted Exception, we'll just wait again...
                     }
 
                     else {
@@ -192,7 +191,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                     if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
                         score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
                         score+=100;
-                        scoreText.setText("Score: " + score);
+                        //scoreText.setText("Score: " + score);
                         Random shapeRandomizer = new Random();
                         Shape.type newtype = Shape.type.T;
                         int choice = shapeRandomizer.nextInt(7);
