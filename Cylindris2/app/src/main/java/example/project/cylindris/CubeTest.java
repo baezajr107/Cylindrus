@@ -147,6 +147,7 @@ class CubeTestSurfaceView extends GLSurfaceView
                             }
 
                             if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, newtype)) {
+                                endGame();
                                 //game over action
                             }
                         }
@@ -227,6 +228,8 @@ class CubeTestSurfaceView extends GLSurfaceView
                         }
 
                         if(!currentShape.initialize(mRenderer.occupationMatrix,currentFront,newtype)){
+                            endGame();
+
                             //game over action
                         }
                     }
@@ -374,5 +377,39 @@ class CubeTestSurfaceView extends GLSurfaceView
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public void endGame() {
+
+        boolean isSpinning = true;
+        boolean cameraRising = true;
+        boolean movingDown = false;
+        int cameraOffset = 0;
+        int depthOffset = 0;
+        while (isSpinning) {
+
+
+            if(cameraOffset>=10){
+                cameraRising = false;
+                movingDown = true;
+            }
+            else{
+                cameraOffset++;
+            }
+            if(!cameraRising && movingDown){
+                depthOffset++;
+            }
+            if(depthOffset>mRenderer.completedRows+15){
+                isSpinning= false;
+            }
+            mRenderer.setAngle(mRenderer.getAngle()+22.5f);;
+
+            try {
+                Thread.sleep(100);
+            }catch(InterruptedException e){
+
+            }
+            requestRender();
+        }
+        return;
     }
 }
