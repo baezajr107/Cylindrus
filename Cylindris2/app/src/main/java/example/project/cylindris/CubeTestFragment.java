@@ -23,17 +23,10 @@ public class CubeTestFragment extends Fragment {
     private GLSurfaceView mGLView;
 
 
-    public CubeTestFragment()
-    {
-
-        super();
-
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        super.onCreateView(inflater,container,savedInstanceState);
         mGLView = new CubeTestFragmentSurfaceView(this.getActivity().getApplicationContext());
         return mGLView;
 
@@ -44,13 +37,12 @@ public class CubeTestFragment extends Fragment {
 }
 class CubeTestFragmentSurfaceView extends GLSurfaceView
 {
-    private final CubeTestRenderer  mRenderer;
+    public final CubeTestRenderer  mRenderer;
     public int currentFront;
-    public long timer;
-    Shape currentShape = new Shape();
-
-
-
+    public static Shape currentShape = new Shape();
+    public static int level = 1;
+    public static int timer = 1000;
+    public static int score = 0;
 
     public CubeTestFragmentSurfaceView(Context context) {
         super(context);
@@ -65,8 +57,73 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
         // Turn off for continuous render when no user events ex. touch
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         currentFront = 8;
-        timer = 1;
-        run();
+
+
+        new Thread(new Runnable() {
+            public void run() {
+                Shape currentShape = CubeTestSurfaceView.currentShape;
+                while (true) {
+                    if(!CubeTestRenderer.loaded) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    else {
+
+                        if (!currentShape.shiftDown(mRenderer.occupationMatrix)) {
+                            score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
+                            score+=100;
+                            Random shapeRandomizer = new Random();
+                            Shape.type newtype = Shape.type.T;
+                            int choice = shapeRandomizer.nextInt(7);
+                            switch (choice) {
+                                case 0:
+                                    newtype = Shape.type.L;
+                                    break;
+                                case 1:
+                                    newtype = Shape.type.J;
+                                    break;
+                                case 2:
+                                    newtype = Shape.type.Z;
+                                    break;
+                                case 3:
+                                    newtype = Shape.type.S;
+                                    break;
+                                case 4:
+                                    newtype = Shape.type.O;
+                                    break;
+                                case 5:
+                                    newtype = Shape.type.T;
+                                    break;
+                                case 6:
+                                    newtype = Shape.type.I;
+                                    break;
+                            }
+
+                            if (!currentShape.initialize(mRenderer.occupationMatrix, currentFront, newtype)) {
+                                //game over action
+                            }
+                        }
+
+                        updateColors(mRenderer.active, currentShape.xCoords, currentShape.yCoords, currentShape.currentType);
+                        requestRender();
+                    }
+                    try {
+                        Thread.sleep(timer);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+        }).start();
+
+
     }
 
     private void run() {
@@ -112,7 +169,8 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
                 //down
                 else if(y>height*.8){
                     if(!currentShape.shiftDown(mRenderer.occupationMatrix)){
-                        clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive);
+                        score+=clearComplete(mRenderer.occupationMatrix, mRenderer.active, mRenderer.passive)*1000;
+                        score+=100;
                         Random shapeRandomizer = new Random();
                         Shape.type newtype = Shape.type.T;
                         int choice = shapeRandomizer.nextInt(7);
@@ -130,6 +188,7 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
                             //game over action
                         }
                     }
+
                     updateColors(mRenderer.active,currentShape.xCoords,currentShape.yCoords,currentShape.currentType);
                 }
                 //rotate
@@ -200,8 +259,9 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
     }
 
 
-    public boolean clearComplete(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes){
+    public int clearComplete(boolean[][] occupationMatrix, CubeModel[][] activeCubes, CubeModel[][] passiveCubes){
 
+        int completed = 0;
         for(int i=14;i>=0;i--){
             int takenBlocks = 0;
             for(int j=0;j<16;j++){
@@ -211,13 +271,16 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
             }
             if(takenBlocks==16){
                 mRenderer.completedRows++;
-                if(mRenderer.completedRows>95){
-                    return true;//congratulations, you have absolutely no life
+                if(mRenderer.completedRows%1 == 0){
+                    level ++;
+                    if(timer>=100)
+                        timer-=100;
                 }
                 shiftActiveToPassive(occupationMatrix,activeCubes,passiveCubes,i);
+                completed++;
             }
         }
-        return false;
+        return completed;
 
 
     }
@@ -239,21 +302,32 @@ class CubeTestFragmentSurfaceView extends GLSurfaceView
         for(int i=layer;i<activeCubes.length-1;i++){
             for(int j=0;j<16;j++) {
                 occupationMatrix[i][j] = occupationMatrix[i+1][j];
+                float[] tempcolors = new float[4];
+                for(int k=0;k<4;k++){
+                    tempcolors[k] = activeCubes[i+1][j].color[k];
+                }
                 activeCubes[i][j] = activeCubes[i+1][j];
+                activeCubes[i][j].color = new float[4];
+                for(int k=0;k<4;k++){
+                    activeCubes[i][j].color[k] = tempcolors[k];
+                }
             }
         }
         //clear top row
         try{
-//            int offsetAngle = 0;
+            float offsetAngle = (16-currentFront)*22.5f;
             Random value = new Random();
             for(int i=0;i<16;i++){
                 occupationMatrix[activeCubes.length-1][i]=false;
-//                activeCubes[activeCubes.length-1][i] = new CubeModel(mRenderer.context, "testcube", activeCubes[activeCubes.length-2][i].angleOffset, false);
-                activeCubes[activeCubes.length-1][i].color[0] = value.nextFloat();
-                activeCubes[activeCubes.length-1][i].color[1] = value.nextFloat();
-                activeCubes[activeCubes.length-1][i].color[2] = value.nextFloat();
-                activeCubes[activeCubes.length-1][i].color[3] = 0;
-//                offsetAngle+=22.5;
+                float[] colors = new float[4];
+                colors[0] = 1f;
+                colors[1] = 1f;
+                colors[2] = 1f;
+                colors[3] = 1f;
+                activeCubes[activeCubes.length-1][i].color = colors;
+                //activeCubes[activeCubes.length-1][i] = new CubeModel(mRenderer.context, "testcube", offsetAngle, false,colors);
+
+                offsetAngle+=22.5;
             }
         } catch (Exception e) {
             e.printStackTrace();

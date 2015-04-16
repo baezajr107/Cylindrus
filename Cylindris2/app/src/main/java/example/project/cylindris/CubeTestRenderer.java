@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.provider.Settings;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -155,6 +156,7 @@ public class CubeTestRenderer implements GLSurfaceView.Renderer
 
             }
         } catch (Exception e) {
+            System.out.println("allocate line crashed");
             e.printStackTrace();
         }
     }
